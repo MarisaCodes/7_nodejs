@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include("../partials/head.ejs") %>
+
+  <body>
+    <%- include("../partials/nav.ejs") %>
+    <!--content-->
+    <form class="create-blog">
+      <label for="title">Blog title</label>
+      <input
+        type="text"
+        name="title"
+        id="title"
+        value="<%=blog.title%>"
+        placeholder="Blog body..."
+      />
+      <label for="body">Blog body:</label>
+      <textarea
+        name="body"
+        id="body"
+        cols="30"
+        rows="10"
+        placeholder="Wow such empty..."
+      >
+<%=blog.body%></textarea
+      >
+      <a class="option-btn edit" data-doc="<%=blog._id%>">edit</a>
+    </form>
+    <%- include("../partials/footer.ejs") %>
+    <script>
+      const editBtn = document.querySelector(".edit");
+      const endpoint = `/blogs/${editBtn.dataset.doc}`;
+
+      editBtn.addEventListener("click", () => {
+        const body = JSON.stringify({
+          title: document.forms[0].title.value,
+          body: document.querySelector("#body").value,
+        });
+        fetch(endpoint, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            window.location.href = data.redirect;
+          })
+          .catch((err) => console.log(err));
+      });
+    </script>
+  </body>
+</html>
